@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/haoyunl2/SeisFlowBench/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14927938.svg)](https://doi.org/10.5281/zenodo.14927938)
 
 # SeisFlowBench: A Benchmarking Dataset for Seismic and Flow Simulations  
