@@ -1,5 +1,5 @@
 using DrWatson, Test
-@quickactivate "benchmark-dataset"
+@quickactivate "SeisFlowBench"
 
 # Here you include files using `srcdir`
 # include(srcdir("file.jl"))

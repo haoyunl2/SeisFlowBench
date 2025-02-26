@@ -80,20 +80,20 @@ To convert all samples into **a single HDF5 file**, use the function provided in
 Run the script as follows:  
 ```julia
 include("scripts/convert_jld2_hdf5.jl")
-convert_all_samples_to_hdf5("2D_perm_wise", 1:10, "all_samples.h5")
+convert_all_samples_to_hdf5("2D_perm_perturb", 1:10, "all_samples.h5")
 ```
-✅ This will save all data in **one HDF5 file** under `/data/2D_perm_wise/all_samples.h5`.
+✅ This will save all data in **one HDF5 file** under `/data/2D_perm_perturb/all_samples.h5`.
 
 ---
 
 ## 📥 Loading Data from HDF5  
 To **load and inspect simulation data** from HDF5, use the provided function in:  
-📄 **`scripts/load_hdf5_data.jl`**  
+📄 **`scripts/load_hdf5.jl`**  
 
 Example usage:  
 ```julia
-include("scripts/load_hdf5_data.jl")
-hdf5_file = datadir("2D_perm_wise", "all_samples.h5")
+include("scripts/load_hdf5.jl")
+hdf5_file = datadir("2D_perm_perturb", "all_samples.h5")
 data = load_hdf5_data(hdf5_file)
 
 # Accessing a specific variable
