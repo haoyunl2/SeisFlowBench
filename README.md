@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14927938.svg)](https://doi.org/10.5281/zenodo.14927938)
+
 # SeisFlowBench: A Benchmarking Dataset for Seismic and Flow Simulations  
 
 This repository provides a **reproducible scientific project** built using **Julia** and **DrWatson.jl**.  
