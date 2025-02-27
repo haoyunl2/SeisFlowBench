@@ -51,7 +51,7 @@ P0 = (repeat(collect(1:128), 1, 128) * d[3] .+ h) * JutulDarcyRules.ρH2O * 9.80
 # Simulation Settings
 # -----------------------------------------------------------------------------
 num_sample = 10  # Number of permeability samples to simulate
-perturb = false  # Set `true` for perturbed permeability fields, `false` for standard
+perturb = true  # Set `true` for perturbed permeability fields, `false` for standard
 
 # Ensure the raw data directory exists
 perm_dir = datadir("perm")
