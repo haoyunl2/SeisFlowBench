@@ -51,36 +51,35 @@ P0 = (repeat(collect(1:128), 1, 128) * d[3] .+ h) * JutulDarcyRules.ρH2O * 9.80
 # Simulation Settings
 # -----------------------------------------------------------------------------
 num_sample = 10  # Number of permeability samples to simulate
-perturb = false  # Use perturbed permeability fields
+perturb = false  # Set `true` for perturbed permeability fields, `false` for standard
 
-# Define raw data directory
-mkpath(datadir("perm"))  # Ensure the directory exists
+# Ensure the raw data directory exists
+perm_dir = datadir("perm")
+mkpath(perm_dir)
 
-# Define file paths
-perturb_file = datadir("perm", "K_array_perturb.jld2")
-wise_file = datadir("perm", "K_array_wise.jld2")
+# Define dataset filenames
+perturb_file = joinpath(perm_dir, "K_array_perturb.jld2")
+wise_file = joinpath(perm_dir, "K_array_wise.jld2")
 
-# Define Dropbox links (converted to direct download links)
-dropbox_perturb = "https://www.dropbox.com/scl/fi/fggvt2ekht17m2l1exkj4/K_array_perturb.jld2?rlkey=qijc16n6449637aea4tgxuetp&st=kwl5ohs4&dl=1"
-dropbox_wise = "https://www.dropbox.com/scl/fi/bz43je3pcvyolxsy9xjmi/K_array_wise.jld2?rlkey=4dwdz2pslkttdt6vxn694a5ci&st=cbdj947g&dl=1"
+# Define Dropbox links for direct download
+dropbox_links = Dict(
+    "perturb" => "https://www.dropbox.com/scl/fi/fggvt2ekht17m2l1exkj4/K_array_perturb.jld2?rlkey=qijc16n6449637aea4tgxuetp&st=kwl5ohs4&dl=1",
+    "wise"    => "https://www.dropbox.com/scl/fi/bz43je3pcvyolxsy9xjmi/K_array_wise.jld2?rlkey=4dwdz2pslkttdt6vxn694a5ci&st=cbdj947g&dl=1"
+)
 
-# Download if files do not exist
-if !isfile(perturb_file)
-    println("Downloading K_array_perturb.jld2...")
-    Downloads.download(dropbox_perturb, perturb_file)
+# Select dataset based on `perturb` flag
+dataset_type = perturb ? "perturb" : "wise"
+dataset_file = perturb ? perturb_file : wise_file
+
+# Download dataset if it does not exist
+if !isfile(dataset_file)
+    println("Downloading $(basename(dataset_file))...")
+    Downloads.download(dropbox_links[dataset_type], dataset_file)
 end
 
-if !isfile(wise_file)
-    println("Downloading K_array_wise.jld2...")
-    Downloads.download(dropbox_wise, wise_file)
-end
-
-# Load dataset based on perturb condition
-perturb = true  # Change this as needed
-perm_file = perturb ? perturb_file : wise_file
-
-@load perm_file K_array
-println("Loaded dataset with shape: ", size(K_array))
+# Load permeability dataset
+@load dataset_file K_array
+println("✅ Successfully loaded dataset: $(basename(dataset_file)) with shape: ", size(K_array))
 
 # -----------------------------------------------------------------------------
 # Simulation Function
@@ -172,7 +171,7 @@ function plot_saturation_pressure(S_array, P_diff_array, sample, path, tstep)
 
         # Pressure difference plot
         subplot(2, 1, 2)
-        imshow(P_diff_array[step]')
+        imshow(P_diff_array[step]'/1e6)
         clb_P = colorbar()
         clb_P[:ax][:set_title]("MPa", fontsize=12)
         title("Pressure Difference", fontsize=15)
