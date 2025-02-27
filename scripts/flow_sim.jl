@@ -33,7 +33,7 @@ Pkg.activate(".")  # Activate the project environment
 # Uncomment this line when running for the first time to install dependencies
 # Pkg.instantiate()
 
-using DrWatson, JutulDarcyRules, LinearAlgebra, JLD2, PyPlot, PyCall, SlimPlotting
+using DrWatson, JutulDarcyRules, LinearAlgebra, JLD2, PyPlot, PyCall, SlimPlotting, Downloads
 @pyimport cmasher  # Colormap utilities
 
 # -----------------------------------------------------------------------------
@@ -51,11 +51,36 @@ P0 = (repeat(collect(1:128), 1, 128) * d[3] .+ h) * JutulDarcyRules.ρH2O * 9.80
 # Simulation Settings
 # -----------------------------------------------------------------------------
 num_sample = 10  # Number of permeability samples to simulate
-perturb = true  # Use perturbed permeability fields
+perturb = false  # Use perturbed permeability fields
 
-# Load permeability dataset
-perm_file = perturb ? "K_array_perturb.jld2" : "K_array_wise.jld2"
-JLD2.@load datadir("perm", perm_file) K_array
+# Define raw data directory
+mkpath(datadir("perm"))  # Ensure the directory exists
+
+# Define file paths
+perturb_file = datadir("perm", "K_array_perturb.jld2")
+wise_file = datadir("perm", "K_array_wise.jld2")
+
+# Define Dropbox links (converted to direct download links)
+dropbox_perturb = "https://www.dropbox.com/scl/fi/fggvt2ekht17m2l1exkj4/K_array_perturb.jld2?rlkey=qijc16n6449637aea4tgxuetp&st=kwl5ohs4&dl=1"
+dropbox_wise = "https://www.dropbox.com/scl/fi/bz43je3pcvyolxsy9xjmi/K_array_wise.jld2?rlkey=4dwdz2pslkttdt6vxn694a5ci&st=cbdj947g&dl=1"
+
+# Download if files do not exist
+if !isfile(perturb_file)
+    println("Downloading K_array_perturb.jld2...")
+    Downloads.download(dropbox_perturb, perturb_file)
+end
+
+if !isfile(wise_file)
+    println("Downloading K_array_wise.jld2...")
+    Downloads.download(dropbox_wise, wise_file)
+end
+
+# Load dataset based on perturb condition
+perturb = true  # Change this as needed
+perm_file = perturb ? perturb_file : wise_file
+
+@load perm_file K_array
+println("Loaded dataset with shape: ", size(K_array))
 
 # -----------------------------------------------------------------------------
 # Simulation Function
